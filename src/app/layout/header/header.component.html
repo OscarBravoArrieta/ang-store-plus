@@ -1,0 +1,25 @@
+ <div class = "layout-topbar">
+     <div class="flex justify-content-between flex-wrap card-container purple-container">
+         <div class="flex justify-content-start align-items-center flex-wrap">
+             <p-image src="logos/my-eCommerce1.png" alt="Image" width="50%" routerLink = "/">
+
+             </p-image>
+         </div>
+         <div class="flex justify-content-end align-items-center flex-wrap">
+
+             <div class="card flex justify-center">
+                <div class="card flex">
+                    <p-button [rounded]="true" icon="pi pi-shopping-cart"/>
+                </div>
+            </div>
+            <div class="card flex justify-center ml-2">
+                <div class="card flex">
+                    <p-menu #menu [model]="items" [popup]="true" />
+                    <p-button (click)="menu.toggle($event)" [rounded]="true" icon="pi pi-user"/>
+                </div>
+            </div>
+         </div>
+     </div>
+ </div>
+
+
