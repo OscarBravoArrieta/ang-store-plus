@@ -4,6 +4,17 @@
   "compileOnSave": false,
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
+    "baseUrl": "./src/",
+    "paths": {
+        "@products/*": ["app/components/*"],
+        "@imports/*": ["app/imports/*"],
+        "@layout/*": ["app/layout/*"],
+        "@model/*": ["app/models/*"],
+        "@services/*": ["app/services/*"],
+        "@utils/*": ["app/utils/*"],
+        "@environments/*": ["environments/*"],
+        "@signal-store/*": ["signal-store/*"]
+    },
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

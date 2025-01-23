@@ -1,7 +1,9 @@
+
  import { Component } from '@angular/core'
  import { RouterOutlet } from '@angular/router'
- import { PrimeNgModule } from './imports/primeng'
- import { HeaderComponent } from './layout/header/header.component'
+ import { FormsModule, ReactiveFormsModule  } from '@angular/forms'
+ import { PrimeNgModule } from '@imports/primeng'
+ import { HeaderComponent } from '@layout/header/header.component'
 
  @Component({
 
@@ -9,7 +11,9 @@
      imports: [
          RouterOutlet,
          PrimeNgModule,
-         HeaderComponent
+         HeaderComponent,
+         FormsModule,
+         ReactiveFormsModule
      ],
      templateUrl: './app.component.html',
      styleUrl: './app.component.scss'

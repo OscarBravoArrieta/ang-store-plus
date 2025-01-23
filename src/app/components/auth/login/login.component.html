@@ -1,0 +1,33 @@
+<div class="surface-card p-3 shadow-2 border-round w-full">
+    <form [formGroup]="form" (ngSubmit)="login()">
+
+    <div class="text-center mb-1">
+        <img src="logos/my-eCommerce1.png" alt="Image" height="50" class="mb-2">
+        <div class="text-700 text-2xl font-medium mb-2">Bienvenido de nuevo</div>
+        <span class="text-600 font-medium line-height-3">¿No tienes una cuenta?</span>
+        <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">¡Créala hoy!</a>
+    </div>
+
+    <div>
+        <label for="email" class="block text-900 font-medium mb-1">Email</label>
+        <input id="email" type="text" formControlName="email" placeholder="Email" pInputText pSize="small" class="w-full mb-2">
+
+        <small class="p-error flex align-items-center message-error" [class.show] = "this.form.get('email')?.errors?.['required'] && statusForm()" >
+            Correo electrónico es requerido
+        </small>
+
+        <small class="p-error flex align-items-center message-error" [class.show] = "this.form.get('email')?.errors?.['email'] && statusForm()" >
+            No es un email válido
+        </small>
+
+        <label for="password" class="block text-900 font-medium mb-1">Password</label>
+        <input id="password" type="password" formControlName="password" placeholder="Password" pInputText pSize="small" class="w-full mb-2">
+
+        <small class="p-error flex align-items-center message-error" [class.show] = "this.form.get('password')?.errors?.['required'] && statusForm()" >
+            Password es requerido
+        </small>
+
+        <button pButton pRipple label="Sign In" icon="pi pi-user" type = 'submit' class="w-full"></button>
+    </div>
+</form>
+</div>

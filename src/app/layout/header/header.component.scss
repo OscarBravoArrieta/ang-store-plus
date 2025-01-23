@@ -19,14 +19,10 @@
  .message-error {
      background-color: red;
      color: white;
-    opacity: 0;
-    transition: all linear .5s;
+     opacity: 0;
+     transition: all linear .5s;
  }
  .message-error.show {
      opacity: 1;
  }
 
- *{
-   font-family: Montserrat-VariableFont_wght;
-   font-size: small;
- }
