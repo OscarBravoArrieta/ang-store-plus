@@ -16,6 +16,7 @@
  }
 
  export interface EmailIsAvailable {
+
      isAvailable: boolean
 
  }

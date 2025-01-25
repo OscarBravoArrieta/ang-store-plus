@@ -21,17 +21,89 @@
 
      //--------------------------------------------------------------------------------------------
 
-     createUser(user: User) {
+     setToken(token: Token): void {
 
-         return this.http.post<User>(`${this.endPoint}/users/`, user)
+         try {
+
+             localStorage.setItem('token', JSON.stringify(token))
+
+         } catch (error) {
+
+             console.error('Error saving token ', error)
+
+         }
+     }
+
+     //--------------------------------------------------------------------------------------------
+
+     setCurrentUser (userName: string): void {
+
+         try {
+
+             localStorage.setItem('currentUser', JSON.stringify(userName))
+
+         } catch (error) {
+
+             console.error('Error saving userNAme ', error)
+
+         }
+
+     }
+
+     //-------------------------------------------------------------------------------------------
+
+     getToken(): string | null{
+
+         try {
+
+             const token = localStorage.getItem('token')
+             return token ? JSON.parse(token) : null
+
+         } catch (error) {
+             console.error('Error loading cart state ', error)
+             return null
+
+         }
 
      }
 
      //--------------------------------------------------------------------------------------------
-     checkEmail (objectEmail: Email) {
 
-         return this.http.post<EmailIsAvailable>(`${this.endPoint}/users/is-available`, objectEmail)
+     getCurrentUser(): string | null {
+
+         let currentUser = null
+
+         try {
+
+             if (typeof window !== 'undefined') {
+
+                 const storage = localStorage.getItem('currentUser') ? localStorage.getItem('currentUser') : null
+                 if (storage) {
+                     currentUser = JSON.parse(storage)
+                 }
+                 return currentUser
+             }
+
+             return null
+
+
+         } catch (error) {
+
+             console.error('Error loading currentUser ', error)
+             return null
+
+         }
 
      }
+
      //--------------------------------------------------------------------------------------------
+
+
+     loggIn() {
+
+         return !!localStorage.getItem('currentUser')
+
+     }
+
+     // -----------------------------------------------------------------------------------------------
  }

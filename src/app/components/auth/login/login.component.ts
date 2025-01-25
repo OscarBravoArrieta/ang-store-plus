@@ -1,10 +1,13 @@
  import { Component, inject, signal } from '@angular/core'
  import { PrimeNgModule } from '@imports/primeng'
  import { AuthService } from '@services/auth.service'
+ import { UsersService } from '@services/users.service'
  import { DynamicDialogRef } from 'primeng/dynamicdialog'
+ import { jwtDecode }  from "jwt-decode"
  import { Validators, FormGroup, FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms'
  import { Router } from '@angular/router'
  import { UserToLog, Token  } from '@model/users.model'
+
 
  @Component({
      selector: 'app-login',
@@ -20,11 +23,12 @@
 
      private formBuilder = inject (FormBuilder)
      private authService = inject(AuthService)
+     private usersService = inject(UsersService)
      private router = inject(Router)
 
      form!: FormGroup
      statusForm = signal(false)
-     token!: Token
+     token = signal<Token>({"access_token":'', "refresh_token": ""})
      private ref = inject (DynamicDialogRef)
 
      //--------------------------------------------------------------------------------------------
@@ -47,9 +51,13 @@
      //--------------------------------------------------------------------------------------------
 
      get emailField() {
+
          return this.form.get('email')
+
      }
+
      get passwordField() {
+
          return this.form.get('password')
      }
 
@@ -67,11 +75,14 @@
              }
              this.authService.logIn(user).subscribe({
                  next: (token) => {
-                     this.token = token
-                     console.log('Token:-> ', this.token.access_token)
-
+                     this.token.set(token)
+                     this.authService.setToken(this.token())
+                     let tokenDecoded = jwtDecode(this.token().access_token)
+                     console.log('Decoded: ',tokenDecoded.sub)
+                     this.authService.setCurrentUser(user.email)
                      this.ref.close(this.formBuilder)
-                     //this.router.navigate(['dashboard/products-store'])
+                     this.router.navigate([''])
+                     //location.reload();
                  }, error: (error: any) => {
                      //this.status = 'failed'
                      //this.messageService.add({ severity: 'error', summary: 'Error', detail: error.statusText})

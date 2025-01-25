@@ -3,7 +3,7 @@
  import { RouterOutlet } from '@angular/router'
  import { FormsModule, ReactiveFormsModule  } from '@angular/forms'
  import { PrimeNgModule } from '@imports/primeng'
- import { HeaderComponent } from '@layout/header/header.component'
+ import { HomeComponent } from '@products/home/home.component'
 
  @Component({
 
@@ -11,13 +11,14 @@
      imports: [
          RouterOutlet,
          PrimeNgModule,
-         HeaderComponent,
          FormsModule,
-         ReactiveFormsModule
+         ReactiveFormsModule,
+         HomeComponent
      ],
      templateUrl: './app.component.html',
      styleUrl: './app.component.scss'
  })
  export class AppComponent {
      title = 'ang-store-plus'
+
  }
