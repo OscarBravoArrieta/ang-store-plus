@@ -4,27 +4,63 @@
              <p-image src="logos/my-eCommerce1.png" alt="Image" width="50%" routerLink = "/">
 
              </p-image>
+
+                 @if(isLogged() && role() == 'admin'){
+
+                     <p-button label="Categorías" size="small" [link]="true"></p-button>
+                     <p-button label="Productos" size="small" [link]="true"></p-button>
+                     <p-button label="Usuarios" size="small" [link]="true"></p-button>
+
+                 }
+
          </div>
          <div class="flex justify-content-end align-items-center flex-wrap">
 
-            <div class="card flex justify-center">
-                <div class="card flex">
 
-                    <p-button label="Login"  icon="pi pi-user" (onClick)="callLogin()" size="small" severity="info"/>
-                </div>
-            </div>
+             @if(!isLogged()){
 
-             <div class="card flex justify-center ml-2">
-                <div class="card flex">
-                    <p-button [rounded]="true" icon="pi pi-shopping-cart"/>
+                 <div class="card flex justify-center">
+                     <div class="card flex">
+                         <p-button label="Login"  icon="pi pi-user" (onClick)="callLogin()" size="small" severity="info"/>
+                     </div>
+                 </div>
+             }
+
+             @if(isLogged()){
+
+                <div class="card flex justify-center">
+                    <div class="card flex">
+                         <p class="green-50 text-sm">
+
+                             Hola, {{currentUser.name}}. Bienvenido
+
+                         </p>
+
+                    </div>
                 </div>
-            </div>
-            <div class="card flex justify-center ml-2">
-                <div class="card flex">
-                    <p-menu #menu [model]="items" [popup]="true" />
-                    <p-button (click)="menu.toggle($event)" [rounded]="true" icon="pi pi-user"/>
-                </div>
-            </div>
+            }
+
+
+
+
+
+             @if(isLogged() && role() != 'admin'){
+                 <div class="card flex justify-center ml-2">
+                     <div class="card flex">
+                         <p-button [rounded]="true" icon="pi pi-shopping-cart"/>
+                     </div>
+                 </div>
+                 }
+                 @if(isLogged()){
+
+                     <div class="card flex justify-center ml-2">
+
+                         <div class="card flex">
+                             <p-menu #menu [model]="items" [popup]="true" />
+                             <p-button (click)="menu.toggle($event)" [rounded]="true" icon="pi pi-user"/>
+                         </div>
+                     </div>
+                 }
          </div>
      </div>
  </div>

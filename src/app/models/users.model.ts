@@ -5,6 +5,7 @@
      password: string
      role?: string
      avatar?: string
+
  }
  export interface UserToLog {
      email: string

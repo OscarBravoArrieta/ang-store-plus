@@ -1,12 +1,14 @@
- import { Component, inject, signal } from '@angular/core'
+ import { Component, inject, signal, AfterViewInit, ViewChild  } from '@angular/core'
+ import { Validators, FormGroup, FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms'
  import { PrimeNgModule } from '@imports/primeng'
  import { AuthService } from '@services/auth.service'
  import { UsersService } from '@services/users.service'
+ import { TokenService } from '@services/token.service'
+ import { LocalStorageService } from '@services/local-storage.service'
  import { DynamicDialogRef } from 'primeng/dynamicdialog'
- import { jwtDecode }  from "jwt-decode"
- import { Validators, FormGroup, FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms'
+
  import { Router } from '@angular/router'
- import { UserToLog, Token  } from '@model/users.model'
+ import { UserToLog, Token, User  } from '@model/users.model'
 
 
  @Component({
@@ -14,7 +16,7 @@
      imports: [
          PrimeNgModule,
          FormsModule,
-         ReactiveFormsModule
+         ReactiveFormsModule,
      ],
      templateUrl: './login.component.html',
      styleUrl: './login.component.scss'
@@ -25,11 +27,12 @@
      private authService = inject(AuthService)
      private usersService = inject(UsersService)
      private router = inject(Router)
+     private localStorageService = inject(LocalStorageService)
 
      form!: FormGroup
      statusForm = signal(false)
-     token = signal<Token>({"access_token":'', "refresh_token": ""})
      private ref = inject (DynamicDialogRef)
+     errorFromApi = signal<string>('')
 
      //--------------------------------------------------------------------------------------------
 
@@ -46,6 +49,7 @@
              email: ['', Validators.compose([Validators.email, Validators.required])],
              password: ['',[Validators.required]],
          })
+
      }
 
      //--------------------------------------------------------------------------------------------
@@ -68,29 +72,40 @@
          this.statusForm.set(this.form.invalid)
 
          if (this.form.valid) {
-             //this.status = 'loading'
              const user: UserToLog = {
                  email: this.form.value.email,  //'john@mail.com',
                  password: this.form.value.password //'changeme'
              }
+
              this.authService.logIn(user).subscribe({
-                 next: (token) => {
-                     this.token.set(token)
-                     this.authService.setToken(this.token())
-                     let tokenDecoded = jwtDecode(this.token().access_token)
-                     console.log('Decoded: ',tokenDecoded.sub)
-                     this.authService.setCurrentUser(user.email)
+                 next: () => {
                      this.ref.close(this.formBuilder)
-                     this.router.navigate([''])
-                     //location.reload();
+
                  }, error: (error: any) => {
-                     //this.status = 'failed'
-                     //this.messageService.add({ severity: 'error', summary: 'Error', detail: error.statusText})
+                     this.errorFromApi.set(error.statusText)
                  }
              })
+
+             this.authService.currentUser$.subscribe(currentUser =>{
+
+                 this.localStorageService.setItem('currentUser', currentUser)
+
+             })
+             //location.reload()
+
          }
+
      }
 
      // -------------------------------------------------------------------------------------------
+
+     ngOnDestroy() {
+         //this.router.navigate([''])
+
+         if (this.ref) {
+             this.ref.close()
+         }
+
+     }
 
  }

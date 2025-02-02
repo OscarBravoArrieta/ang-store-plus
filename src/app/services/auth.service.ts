@@ -1,109 +1,83 @@
- import { inject, Injectable } from '@angular/core'
+ import { inject, Injectable, } from '@angular/core'
  import { HttpClient } from '@angular/common/http'
  import { environment } from '@environments/environment'
- import { User, Email, UserToLog, EmailIsAvailable, Token } from '@model/users.model'
+ import { UserToLog, Token, User } from '@model/users.model'
+ import { LocalStorageService } from '@services/local-storage.service'
+ import { TokenService } from '@services/token.service'
+ import { switchMap, tap } from 'rxjs/operators'
+ import { BehaviorSubject, Observable } from 'rxjs'
 
  @Injectable({
      providedIn: 'root'
  })
  export class AuthService {
      private http = inject(HttpClient)
+     private localStorageService = inject(LocalStorageService)
+     private tokenService = inject(TokenService)
      private readonly endPoint = environment.API_URL
 
+
+     readonly currentUser$ = new BehaviorSubject<User | null>({} as User)
+
      constructor() { }
+
      //--------------------------------------------------------------------------------------------
 
      logIn(user: UserToLog) {
 
-         return this.http.post<Token>(`${this.endPoint}/auth/login/`, user)
+         return this.http.post<Token>(
+             `${this.endPoint}/auth/login`, user
+         )
+         .pipe(
+             tap(response => {
+                 this.tokenService.saveToken(response)
+             })
+         ).pipe(
+            switchMap(() => this.getProfile())
+        )
 
      }
 
      //--------------------------------------------------------------------------------------------
 
-     setToken(token: Token): void {
+     isLogged() {
 
-         try {
-
-             localStorage.setItem('token', JSON.stringify(token))
-
-         } catch (error) {
-
-             console.error('Error saving token ', error)
-
+         if(this.localStorageService.getItem('currentUser')) {
+             return true
+         } else {
+             return false
          }
-     }
-
-     //--------------------------------------------------------------------------------------------
-
-     setCurrentUser (userName: string): void {
-
-         try {
-
-             localStorage.setItem('currentUser', JSON.stringify(userName))
-
-         } catch (error) {
-
-             console.error('Error saving userNAme ', error)
-
-         }
-
-     }
-
-     //-------------------------------------------------------------------------------------------
-
-     getToken(): string | null{
-
-         try {
-
-             const token = localStorage.getItem('token')
-             return token ? JSON.parse(token) : null
-
-         } catch (error) {
-             console.error('Error loading cart state ', error)
-             return null
-
-         }
-
-     }
-
-     //--------------------------------------------------------------------------------------------
-
-     getCurrentUser(): string | null {
-
-         let currentUser = null
-
-         try {
-
-             if (typeof window !== 'undefined') {
-
-                 const storage = localStorage.getItem('currentUser') ? localStorage.getItem('currentUser') : null
-                 if (storage) {
-                     currentUser = JSON.parse(storage)
-                 }
-                 return currentUser
-             }
-
-             return null
-
-
-         } catch (error) {
-
-             console.error('Error loading currentUser ', error)
-             return null
-
-         }
-
-     }
-
-     //--------------------------------------------------------------------------------------------
-
-
-     loggIn() {
-
-         return !!localStorage.getItem('currentUser')
 
      }
 
      // -----------------------------------------------------------------------------------------------
+
+     getProfile() {
+
+         const token: Token | null = this.tokenService.getToken()
+         const access_token: string | null = token ? token.access_token : null
+
+         return this.http.get<User>(
+
+             `${this.endPoint}/auth/profile`,
+             {headers:{"Authorization": `Bearer ${access_token}`}}
+
+         ).pipe(
+             tap(currentUser => {
+                 this.currentUser$.next(currentUser)
+             })
+         )
+
+     }
+
+     // -----------------------------------------------------------------------------------------------
+
+     logOut() {
+
+         localStorage.clear()
+
+     }
+
+     // -----------------------------------------------------------------------------------------------
+
  }

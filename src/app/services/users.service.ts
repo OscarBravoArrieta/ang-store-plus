@@ -24,7 +24,7 @@
 
      getUser(id: number) {
 
-         return this.http.get<User>(`${this.endPoint}/${id}`)
+         return this.http.get<User>(`${this.endPoint}/users/${id}`)
 
      }
 

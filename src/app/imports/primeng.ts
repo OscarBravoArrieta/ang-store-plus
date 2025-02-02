@@ -6,6 +6,7 @@
  import { Menu } from 'primeng/menu'
  import { MenuModule } from 'primeng/menu'
  import { DynamicDialogModule } from 'primeng/dynamicdialog'
+ import { PasswordModule } from 'primeng/password'
 
  @NgModule({
      declarations: [],
@@ -16,7 +17,8 @@
          ButtonModule,
          Menu,
          MenuModule,
-         DynamicDialogModule
+         DynamicDialogModule,
+         PasswordModule
 
      ],
      exports: [
@@ -25,7 +27,8 @@
          InputTextModule,
          Menu,
          MenuModule,
-         DynamicDialogModule
+         DynamicDialogModule,
+         PasswordModule
      ]
  })
  export class PrimeNgModule {}
